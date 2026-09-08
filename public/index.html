@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generator Makalah AI - Eco Style</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Google Identity Services SDK -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #eaf2d7 0%, #cce0ac 50%, #b3d493 100%);
+      color: #2e1a0c;
+      padding: 30px 15px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      background: #fdfbf7;
+      padding: 35px;
+      border-radius: 20px;
+      border: 4px solid #5b8c1d;
+      box-shadow: 0 12px 28px rgba(46, 26, 12, 0.18);
+      position: relative;
+    }
+
+    /* BAR AUTHENTIKASI & HISTORI */
+    .auth-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #eaf2d7;
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 2px solid #5b8c1d;
+      margin-bottom: 25px;
+    }
+    .user-profile {
+      display: none;
+      align-items: center;
+      gap: 12px;
+    }
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #5b8c1d;
+    }
+    .user-info {
+      font-size: 13px;
+      line-height: 1.2;
+    }
+    .user-info strong {
+      color: #6d3209;
+      display: block;
+    }
+    .btn-logout {
+      background: #d84315;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* HEADER STYLE */
+    .header-box {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .brand-tag {
+      font-family: 'Fredoka', cursive;
+      color: #8b4513;
+      font-size: 14px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    h1 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 32px;
+      color: #ff6f00;
+      text-shadow: 3px 3px 0px #6d3209, -1px -1px 0 #6d3209, 1px -1px 0 #6d3209, -1px 1px 0 #6d3209, 1px 1px 0 #6d3209;
+      letter-spacing: 1px;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .sub-title {
+      display: inline-block;
+      background: #5b8c1d;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 4px 16px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+
+    /* BUTTON AUTOFILL & FITUR HISTORI TOGGLE */
+    .action-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .btn-autofill {
+      background-color: #ff9800;
+      color: #ffffff;
+      border: 2px solid #e65100;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #e65100;
+    }
+    .btn-history-toggle {
+      background-color: #5b8c1d;
+      color: #ffffff;
+      border: 2px solid #3c5e13;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #3c5e13;
+    }
+
+    /* KOTAK HISTORI */
+    .history-card {
+      display: none;
+      background: #ffffff;
+      border: 3px solid #5b8c1d;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .history-card h3 {
+      font-family: 'Fredoka', sans-serif;
+      color: #6d3209;
+      font-size: 16px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .history-list {
+      list-style: none;
+    }
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 13px;
+    }
+    .history-item:last-child {
+      border-bottom: none;
+    }
+    .history-title {
+      font-weight: 600;
+      color: #2e1a0c;
+    }
+    .history-date {
+      color: #777;
+      font-size: 11px;
+    }
+    .btn-re-download {
+      background: #ff9800;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    /* MODULE CARDS */
+    .section-card {
+      background: #7a3e12;
+      border: 3px solid #522708;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-family: 'Fredoka', sans-serif;
+      background: #5b8c1d;
+      color: #ffffff;
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 8px;
+      font-size: 15px;
+      margin-bottom: 15px;
+      border: 2px solid #3c5e13;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #fcebd9;
+    }
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid #522708;
+      border-radius: 8px;
+      font-size: 13.5px;
+      outline: none;
+      background-color: #fefefe;
+      color: #2e1a0c;
+      font-family: 'Poppins', sans-serif;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+    .row {
+      display: flex;
+      gap: 15px;
+    }
+    .row .form-group {
+      flex: 1;
+    }
+
+    #logoPreview {
+      max-width: 70px;
+      max-height: 70px;
+      margin-top: 8px;
+      display: none;
+      border: 2px solid #ffffff;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .notice-card {
+      background-color: #eaf2d7;
+      border: 2px solid #5b8c1d;
+      border-left: 6px solid #ff9800;
+      padding: 16px 18px;
+      margin: 25px 0;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+
+    /* SUBMIT BUTTON */
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(180deg, #ff9800 0%, #e65100 100%);
+      color: #ffffff;
+      padding: 16px;
+      border: 3px solid #bf360c;
+      border-radius: 12px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #9a2900;
+    }
+    .btn-submit:disabled {
+      background: #9e9e9e;
+      border-color: #616161;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    /* LOGIN OVERLAY WARNING */
+    .login-overlay-msg {
+      text-align: center;
+      background: #fff3e0;
+      border: 2px dashed #ff9800;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #e65100;
+    }
+
+    /* LOADING OVERLAY */
+    .loading-overlay {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(253, 251, 247, 0.95);
+      border-radius: 16px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    .spinner {
+      border: 6px solid #eaf2d7;
+      border-top: 6px solid #ff9800;
+      border-radius: 50%;
+      width: 55px;
+      height: 55px;
+      animation: spin 0.9s linear infinite;
+      margin-bottom: 15px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- Overlay Loading Spinner -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <h3 style="color: #6d3209; font-family: 'Fredoka', sans-serif; font-size: 22px;">MEMPROSES MAKALAH...</h3>
+    <p style="color: #5b8c1d; font-size: 14px; font-weight: 600; margin-top: 6px;">AI sedang menyusun konten lengkap. Mohon tunggu sekitar 15 detik!</p>
+  </div>
+
+  <!-- BAR AUTHENTIKASI -->
+  <div class="auth-bar">
+    <div style="font-weight: 600; font-size: 13px; color: #5b8c1d;">Status Login:</div>
+    
+    <!-- Tombol Google Sign-In -->
+    <div id="g_id_onload"
+         data-client_id="1049422145510-bk7q52d8u8dg9mbh0sc37u6j8999a6uq.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse"
+         data-auto_prompt="false">
+    </div>
+    <div id="googleBtn" class="g_id_signin" data-type="standard"></div>
+
+    <!-- Profil Pengguna Setelah Login -->
+    <div class="user-profile" id="userProfile">
+      <img src="" id="userImg" class="user-avatar" alt="Avatar">
+      <div class="user-info">
+        <strong id="userName">Nama Pengguna</strong>
+        <span id="userEmail" style="color: #666; font-size: 11px;">user@gmail.com</span>
+      </div>
+      <button type="button" class="btn-logout" onclick="logoutGoogle()">Logout</button>
+    </div>
+  </div>
+
+  <div class="header-box">
+    <div class="brand-tag">Segudang Makalah AI</div>
+    <h1>YUK BUAT MAKALAH DENGAN PRAKTIS!</h1>
+    <span class="sub-title">Otomatis & Terstruktur Akademis</span>
+  </div>
+
+  <!-- PERINGATAN REQUISITE LOGIN -->
+  <div id="loginWarning" class="login-overlay-msg">
+    🔒 Silakan Login dengan Akun Google Anda di kanan atas untuk mulai membuat makalah.
+  </div>
+
+  <div class="action-toolbar">
+    <button type="button" class="btn-history-toggle" onclick="toggleHistory()">📜 Histori Makalah (<span id="historyCount">0</span>)</button>
+    <button type="button" class="btn-autofill" onclick="fillSampleData()">⚡ ISI CONTOH DATA</button>
+  </div>
+
+  <!-- PANEL HISTORI MAKALAH -->
+  <div class="history-card" id="historyCard">
+    <h3>
+      <span>📚 Riwayat Makalah Dibuat</span>
+      <button type="button" onclick="clearHistory()" style="background:none; border:none; color:#d84315; font-size:12px; cursor:pointer;">[Hapus Semua]</button>
+    </h3>
+    <ul class="history-list" id="historyList">
+      <li style="color:#888; font-size:12px;">Belum ada histori makalah yang dibuat.</li>
+    </ul>
+  </div>
+  
+  <form id="makalahForm" action="/api/generate-makalah" method="POST" enctype="multipart/form-data">
+    
+    <!-- MODUL 1: INFORMASI MAKALAH & JUDUL CUSTOM -->
+    <div class="section-card">
+      <div class="section-title">📌 Detail Utama & Judul Makalah</div>
+      
+      <div class="form-group">
+        <label for="judulMakalah">Judul Makalah (Tulis Judul Anda Sendiri / Custom)</label>
+        <textarea id="judulMakalah" name="judulMakalah" placeholder="Ketikkan judul makalah lengkap buatan Anda sendiri di sini..." required></textarea>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="mataKuliah">Mata Kuliah</label>
+          <input type="text" id="mataKuliah" name="mataKuliah" placeholder="Contoh: Ilmu Lingkungan" required>
+        </div>
+        <div class="form-group">
+          <label for="namaDosen">Dosen Pengampu</label>
+          <input type="text" id="namaDosen" name="namaDosen" placeholder="Contoh: Dr. Ir. Budi Santoso, M.Si." required>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODUL 2: DATA MAHASISWA & KAMPUS -->
+    <div class="section-card">
+      <div class="section-title">🎓 Identitas Mahasiswa & Kampus</div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="nama">Nama Mahasiswa</label>
+          <input type="text" id="nama" name="nama" placeholder="Contoh: Rizky Ramadhan" required>
+        </div>
+        <div class="form-group">
+          <label for="nim">NIM</label>
+          <input type="text" id="nim" name="nim" placeholder="Contoh: 21010123" required>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="kelas">Kelas</label>
+          <input type="text" id="kelas" name="kelas" placeholder="Contoh: A1" required>
+        </div>
+        <div class="form-group">
+          <label for="semester">Semester</label>
+          <input type="text" id="semester" name="semester" placeholder="Contoh: 4 (Empat)" required>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="prodi">Program Studi</label>
+          <input type="text" id="prodi" name="prodi" placeholder="Contoh: Biologi" required>
+        </div>
+        <div class="form-group">
+          <label for="fakultas">Fakultas</label>
+          <input type="text" id="fakultas" name="fakultas" placeholder="Contoh: MIPA" required>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="universitas">Universitas / Kampus</label>
+          <input type="text" id="universitas" name="universitas" placeholder="Contoh: Universitas Indonesia" required>
+        </div>
+        <div class="form-group">
+          <label for="kota">Kota</label>
+          <input type="text" id="kota" name="kota" placeholder="Contoh: Jakarta" required>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="tanggal">Tanggal / Bulan</label>
+          <input type="text" id="tanggal" name="tanggal" placeholder="Contoh: 15 Mei" required>
+        </div>
+        <div class="form-group">
+          <label for="tahun">Tahun</label>
+          <input type="text" id="tahun" name="tahun" placeholder="Contoh: 2026" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODUL 3: PENGATURAN STRUKTUR & MARGIN -->
+    <div class="section-card">
+      <div class="section-title">⚙️ Struktur & Layout Makalah</div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="jumlahSubBab">Jumlah Sub-Bab (BAB II)</label>
+          <input type="number" id="jumlahSubBab" name="jumlahSubBab" value="5" min="1" max="10" required>
+        </div>
+        <div class="form-group">
+          <label for="jumlahReferensi">Jumlah Daftar Pustaka</label>
+          <input type="number" id="jumlahReferensi" name="jumlahReferensi" value="5" min="1" max="15" required>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="marginTop">Margin Atas (cm)</label>
+          <input type="number" step="0.1" id="marginTop" name="marginTop" value="4" required>
+        </div>
+        <div class="form-group">
+          <label for="marginBottom">Margin Bawah (cm)</label>
+          <input type="number" step="0.1" id="marginBottom" name="marginBottom" value="3" required>
+        </div>
+        <div class="form-group">
+          <label for="marginLeft">Margin Kiri (cm)</label>
+          <input type="number" step="0.1" id="marginLeft" name="marginLeft" value="4" required>
+        </div>
+        <div class="form-group">
+          <label for="marginRight">Margin Kanan (cm)</label>
+          <input type="number" step="0.1" id="marginRight" name="marginRight" value="3" required>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="logo">Upload Logo Kampus (Opsional)</label>
+          <input type="file" id="logo" name="logo" accept="image/*" onchange="previewImage(event)" style="background:#fff; padding:6px;">
+          <img id="logoPreview" alt="Preview Logo">
+        </div>
+        <div class="form-group">
+          <label for="formatOutput">Format Output File</label>
+          <select id="formatOutput" name="formatOutput">
+            <option value="docx">Word Document (.docx)</option>
+            <option value="pdf">PDF Document (.pdf)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+   <!-- BANNER PERINGATAN REVISI -->
+<div class="notice-card">
+  <strong class="notice-title">💡 Catatan Penting Hasil Ekspor:</strong>
+  <ul>
+    <li>
+      <strong>Saran Terbaik (Word):</strong> Sangat disarankan untuk memilih ekspor ke <strong>Word Document (.docx)</strong> agar Anda dapat memeriksa tata letak, menambahkan logo, serta menyesuaikan isi makalah sebelum dicetak.
+    </li>
+    <li>
+      <strong>Ekspor ke PDF:</strong> Silakan lakukan ekspor/save as ke PDF secara mandiri langsung melalui aplikasi Microsoft Word setelah selesai melakukan pengeditan dokumen.
+    </li>
+    <li>
+      <strong>Fitur Slide PPT (.pptx):</strong> Pembuatan ringkasan presentasi PowerPoint saat ini <em>masih dalam tahap pengembangan</em> dan akan segera hadir pada pembaruan mendatang!
+    </li>
+  </ul>
+</div>
+
+    <button type="submit" id="btnSubmit" class="btn-submit" disabled>🚀 GENERATE MAKALAH SEKARANG</button>
+
+  </form>
+</div>
+
+<script>
+  // LOAD HISTORI SAAT HALAMAN DIMUAT
+  document.addEventListener("DOMContentLoaded", () => {
+    renderHistory();
+  });
+
+  // PARSE TOKEN GOOGLE JWT
+  function parseJwt(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  }
+
+  // CALLBACK GOOGLE LOGIN
+  function handleCredentialResponse(response) {
+    const data = parseJwt(response.credential);
+    
+    document.getElementById('userName').textContent = data.name;
+    document.getElementById('userEmail').textContent = data.email;
+    document.getElementById('userImg').src = data.picture;
+    
+    document.getElementById('googleBtn').style.display = 'none';
+    document.getElementById('userProfile').style.display = 'flex';
+    document.getElementById('loginWarning').style.display = 'none';
+    
+    document.getElementById('btnSubmit').disabled = false;
+  }
+
+  function logoutGoogle() {
+    document.getElementById('googleBtn').style.display = 'block';
+    document.getElementById('userProfile').style.display = 'none';
+    document.getElementById('loginWarning').style.display = 'block';
+    document.getElementById('btnSubmit').disabled = true;
+  }
+
+  // MANAJEMEN FITUR HISTORI (LOCAL STORAGE)
+  function saveToHistory(judul, format) {
+    const history = JSON.parse(localStorage.getItem('makalahHistory') || '[]');
+    const newItem = {
+      id: Date.now(),
+      judul: judul,
+      format: format.toUpperCase(),
+      date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    };
+    history.unshift(newItem);
+    localStorage.setItem('makalahHistory', JSON.stringify(history));
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const history = JSON.parse(localStorage.getItem('makalahHistory') || '[]');
+    const historyList = document.getElementById('historyList');
+    document.getElementById('historyCount').textContent = history.length;
+
+    if (history.length === 0) {
+      historyList.innerHTML = '<li style="color:#888; font-size:12px;">Belum ada histori makalah yang dibuat.</li>';
+      return;
+    }
+
+    historyList.innerHTML = history.map(item => `
+      <li class="history-item">
+        <div>
+          <div class="history-title">${item.judul}</div>
+          <div class="history-date">${item.date} • Format: ${item.format}</div>
+        </div>
+        <button class="btn-re-download" onclick="reDownload('${item.judul}')">🔄 Isi Ulang Judul</button>
+      </li>
+    `).join('');
+  }
+
+  function toggleHistory() {
+    const card = document.getElementById('historyCard');
+    card.style.display = card.style.display === 'block' ? 'none' : 'block';
+  }
+
+  function clearHistory() {
+    if (confirm('Yakin ingin menghapus seluruh histori makalah?')) {
+      localStorage.removeItem('makalahHistory');
+      renderHistory();
+    }
+  }
+
+  function reDownload(judul) {
+    document.getElementById('judulMakalah').value = judul;
+    window.scrollTo({ top: document.getElementById('judulMakalah').offsetTop - 50, behavior: 'smooth' });
+  }
+
+  // AUTOFILL DATA CONTOH
+  function fillSampleData() {
+    document.getElementById('judulMakalah').value = "Analisis Efektivitas Eco Enzyme dalam Pengolahan Limbah Cair Rumah Tangga";
+    document.getElementById('mataKuliah').value = "Pengolahan Limbah & Lingkungan";
+    document.getElementById('namaDosen').value = "Dr. Ir. Budi Santoso, M.Si.";
+    document.getElementById('nama').value = "Rizky Ramadhan";
+    document.getElementById('nim').value = "220101992";
+    document.getElementById('kelas').value = "ENV-A";
+    document.getElementById('semester').value = "4 (Empat)";
+    document.getElementById('prodi').value = "Teknik Lingkungan";
+    document.getElementById('fakultas').value = "Teknik";
+    document.getElementById('universitas').value = "Universitas Indonesia";
+    document.getElementById('kota').value = "Jakarta";
+    document.getElementById('tanggal').value = "10 September";
+    document.getElementById('tahun').value = "2026";
+    document.getElementById('jumlahSubBab').value = "4";
+    document.getElementById('jumlahReferensi').value = "5";
+  }
+
+  // PREVIEW LOGO
+  function previewImage(event) {
+    const reader = new FileReader();
+    const imageField = document.getElementById('logoPreview');
+    reader.onload = function() {
+      if (reader.readyState === 2) {
+        imageField.src = reader.result;
+        imageField.style.display = 'block';
+      }
+    }
+    if (event.target.files[0]) {
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  }
+
+  // SUBMIT FORM & SIMPAN HISTORI
+  document.getElementById('makalahForm').addEventListener('submit', function() {
+    const judul = document.getElementById('judulMakalah').value;
+    const format = document.getElementById('formatOutput').value;
+    
+    // Simpan ke Histori
+    saveToHistory(judul, format);
+
+    document.getElementById('loadingOverlay').style.display = 'flex';
+    document.getElementById('btnSubmit').disabled = true;
+    
+    setTimeout(() => {
+      document.getElementById('loadingOverlay').style.display = 'none';
+      document.getElementById('btnSubmit').disabled = false;
+    }, 45000);
+  });
+</script>
+
+</body>
+</html>
+<script src="client-features.js"></script>
