@@ -31,12 +31,15 @@ libre.convertAsync = function (docxBuf, format, filter) {
 };
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
-const ai = new GoogleGenAI({ apiKey: "AQ.Ab8RN6KEa_lUaASGKpTDU9t2jwqy_5DdAo3miZ2DLBDVp0El3A" });
+// Gunakan Environment Variable jika ada, atau fallback ke key default
+const apiKey = process.env.GEMINI_API_KEY || "AQ.Ab8RN6KEa_lUaASGKpTDU9t2jwqy_5DdAo3miZ2DLBDVp0El3A";
+const ai = new GoogleGenAI({ apiKey });
 const upload = multer({ dest: 'uploads/' });
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 function cmToTwip(cm) {
@@ -88,7 +91,7 @@ function formatFakultas(fakultasStr) {
 }
 
 async function generateAiContentWithFallback(prompt, systemInstruction) {
-  const candidateModels = ['gemini-3.6-flash', 'gemini-2.5-flash', 'gemini-2.5-pro'];
+  const candidateModels = ['gemini-2.5-flash', 'gemini-2.5-pro'];
 
   for (const modelName of candidateModels) {
     console.log(`[AI Request] Memilih model: ${modelName}...`);
@@ -118,7 +121,7 @@ async function generateAiContentWithFallback(prompt, systemInstruction) {
   throw new Error("Seluruh server AI sedang sibuk. Silakan tunggu beberapa detik dan tekan tombol generate kembali.");
 }
 
-async function generateDocxBuffer(input, uploadedFilePath, uploadedFileObj) {
+async function generateDocxBuffer(input, uploadedFilePath) {
   const systemInstruction = `
   Kamu adalah pakar akademis profesional di Indonesia. Tugasmu adalah menghasilkan konten makalah akademik yang sangat mendalam, rapi, dan presisi dalam bentuk JSON terstruktur.
   
@@ -431,34 +434,34 @@ app.post('/api/generate-makalah', upload.single('logo'), async (req, res) => {
 
     console.log(`\n[Web Request] Memproses makalah: "${input.judulMakalah}" | Format: ${formatOutput.toUpperCase()}`);
 
-    const bufferDocx = await generateDocxBuffer(input, uploadedFilePath, req.file);
+    const bufferDocx = await generateDocxBuffer(input, uploadedFilePath);
     const fileNameBase = `Makalah_${(input.nama || 'Pengguna').replace(/\s+/g, '_')}`;
 
     if (formatOutput === 'pdf') {
       const pdfBuffer = await libre.convertAsync(bufferDocx, '.pdf', undefined);
-
-      if (uploadedFilePath && fs.existsSync(uploadedFilePath)) {
-        fs.unlinkSync(uploadedFilePath);
-      }
 
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `attachment; filename="${fileNameBase}.pdf"`);
       res.send(pdfBuffer);
 
     } else {
-      if (uploadedFilePath && fs.existsSync(uploadedFilePath)) {
-        fs.unlinkSync(uploadedFilePath);
-      }
-
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
       res.setHeader('Content-Disposition', `attachment; filename="${fileNameBase}.docx"`);
       res.send(bufferDocx);
     }
 
   } catch (error) {
-    if (uploadedFilePath && fs.existsSync(uploadedFilePath)) fs.unlinkSync(uploadedFilePath);
     console.error("Error backend:", error);
     res.status(500).json({ error: "Gagal membuat makalah", details: error.message });
+  } finally {
+    // Pastikan file sementara terhapus setelah pengolahan selesai
+    if (uploadedFilePath && fs.existsSync(uploadedFilePath)) {
+      try {
+        fs.unlinkSync(uploadedFilePath);
+      } catch (e) {
+        console.error("Gagal menghapus file temporer:", e);
+      }
+    }
   }
 });
 
