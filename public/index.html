@@ -77,7 +77,7 @@
     /* HEADER STYLE */
     .header-box {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
     .brand-tag {
       font-family: 'Fredoka', cursive;
@@ -105,6 +105,163 @@
       padding: 4px 16px;
       border-radius: 20px;
       text-transform: uppercase;
+    }
+
+    /* BANNER STATISTIK KONSUMEN OTOMATIS */
+    .customer-stats-banner {
+      background: linear-gradient(90deg, #fff3e0 0%, #ffe0b2 100%);
+      border: 2px solid #ff9800;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #e65100;
+      box-shadow: 0 4px 10px rgba(230, 81, 0, 0.1);
+    }
+    .customer-count {
+      font-size: 20px;
+      font-family: 'Fredoka', sans-serif;
+      color: #d84315;
+      background: #fff;
+      padding: 2px 10px;
+      border-radius: 8px;
+      border: 1px solid #ff9800;
+      display: inline-block;
+      margin: 0 4px;
+    }
+
+    /* PAKET HARGA & PEMBAYARAN */
+    .pricing-section {
+      background: #f4efe6;
+      border: 3px solid #5b8c1d;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+    .pricing-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 20px;
+      color: #6d3209;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 15px;
+    }
+    .pricing-card {
+      background: #ffffff;
+      border: 2px solid #cce0ac;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      border-color: #5b8c1d;
+    }
+    .pricing-card.popular {
+      border: 3px solid #ff9800;
+      background: #fffefb;
+    }
+    .popular-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ff9800;
+      color: #fff;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 2px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+    }
+    .plan-name {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 16px;
+      color: #2e1a0c;
+      margin-bottom: 6px;
+    }
+    .plan-price {
+      font-size: 20px;
+      font-weight: 700;
+      color: #5b8c1d;
+      margin-bottom: 8px;
+    }
+    .plan-desc {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 12px;
+    }
+    .btn-buy {
+      background: #5b8c1d;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      box-shadow: 0 3px 0 #3c5e13;
+    }
+    .btn-buy:hover {
+      background: #4a7317;
+    }
+
+    /* MODAL POPUP QRIS */
+    .qris-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+    .qris-content {
+      background: #fff;
+      border-radius: 16px;
+      padding: 25px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      border: 4px solid #5b8c1d;
+      position: relative;
+    }
+    .qris-img {
+      width: 220px;
+      height: 220px;
+      margin: 15px auto;
+      border: 2px dashed #ff9800;
+      padding: 10px;
+      border-radius: 12px;
+      background: #fafafa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-close-modal {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #888;
     }
 
     /* BUTTON AUTOFILL & FITUR HISTORI TOGGLE */
@@ -367,6 +524,52 @@
     <span class="sub-title">Otomatis & Terstruktur Akademis</span>
   </div>
 
+  <!-- BANNER STATISTIK KONSUMEN OTOMATIS -->
+  <div class="customer-stats-banner">
+    🎉 Telah dipercaya oleh <span class="customer-count" id="customerCountDisplay">386</span> konsumen aktif untuk pembuatan tugas & makalah!
+  </div>
+
+  <!-- SEKSI PAKET PEMBAYARAN -->
+  <div class="pricing-section">
+    <div class="pricing-title">💳 Pilih Paket Akses & Kuota Makalah</div>
+    <div class="pricing-grid">
+      
+      <!-- Paket 1 -->
+      <div class="pricing-card">
+        <div class="plan-name">Paket Eceran</div>
+        <div class="plan-price">Rp 5.000</div>
+        <div class="plan-desc">1 Makalah Lengkap (Word/PDF)</div>
+        <button type="button" class="btn-buy" onclick="openQrisModal('Paket Eceran', 'Rp 5.000')">Beli Sekarang</button>
+      </div>
+
+      <!-- Paket 2 -->
+      <div class="pricing-card popular">
+        <span class="popular-badge">Paling Laris</span>
+        <div class="plan-name">Paket Trio</div>
+        <div class="plan-price">Rp 10.000</div>
+        <div class="plan-desc">3 Makalah Lengkap</div>
+        <button type="button" class="btn-buy" onclick="openQrisModal('Paket Trio', 'Rp 10.000')">Beli Sekarang</button>
+      </div>
+
+      <!-- Paket 3 -->
+      <div class="pricing-card">
+        <div class="plan-name">Mingguan Pass</div>
+        <div class="plan-price">Rp 25.000</div>
+        <div class="plan-desc">Bebas Akses 1 Minggu</div>
+        <button type="button" class="btn-buy" onclick="openQrisModal('Mingguan Pass', 'Rp 25.000')">Beli Sekarang</button>
+      </div>
+
+      <!-- Paket 4 -->
+      <div class="pricing-card">
+        <div class="plan-name">Bulanan Pass</div>
+        <div class="plan-price">Rp 50.000</div>
+        <div class="plan-desc">Bebas Akses 1 Bulan</div>
+        <button type="button" class="btn-buy" onclick="openQrisModal('Bulanan Pass', 'Rp 50.000')">Beli Sekarang</button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- PERINGATAN REQUISITE LOGIN -->
   <div id="loginWarning" class="login-overlay-msg">
     🔒 Silakan Login dengan Akun Google Anda di kanan atas untuk mulai membuat makalah.
@@ -542,10 +745,59 @@
   </form>
 </div>
 
+<!-- MODAL PEMBAYARAN QRIS -->
+<div class="qris-modal" id="qrisModal">
+  <div class="qris-content">
+    <button type="button" class="btn-close-modal" onclick="closeQrisModal()">&times;</button>
+    <h3 style="font-family: 'Fredoka', sans-serif; color: #6d3209; margin-bottom: 4px;">Pembayaran QRIS</h3>
+    <p id="modalPlanTitle" style="font-size: 14px; font-weight: 600; color: #5b8c1d;"></p>
+    <p id="modalPlanPrice" style="font-size: 18px; font-weight: 700; color: #d84315; margin-bottom: 10px;"></p>
+    
+    <div class="qris-img" id="qrisContainer">
+      <p style="font-size: 12px; color: #666;">Memuat Kode QRIS Otomatis...</p>
+    </div>
+
+    <p style="font-size: 11px; color: #777; margin-top: 10px;">
+      Scan menggunakan GoPay, OVO, DANA, ShopeePay, BCA, atau e-Wallet/MBanking Anda.
+    </p>
+  </div>
+</div>
+
 <script>
+  // HITUNG OTOMATIS KONSUMEN BERSEKALA HARI (+1 TIAP HARI DARI 386)
+  function calculateAutoCustomers() {
+    const baseCount = 386;
+    const startDate = new Date("2026-09-11").getTime(); // Tanggal acuan
+    const now = new Date().getTime();
+    const diffDays = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+    
+    const currentCount = baseCount + (diffDays > 0 ? diffDays : 0);
+    document.getElementById("customerCountDisplay").textContent = currentCount.toLocaleString('id-ID');
+  }
+
+  // FUNGSI MODAL QRIS
+  function openQrisModal(planName, price) {
+    document.getElementById('modalPlanTitle').textContent = planName;
+    document.getElementById('modalPlanPrice').textContent = price;
+    document.getElementById('qrisModal').style.display = 'flex';
+    
+    // Tampilan sementara sebelum API Gateway tersambung
+    document.getElementById('qrisContainer').innerHTML = `
+      <div style="text-align:center;">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=DEMO_PAYMENT_${planName.replace(/\s+/g, '_')}" alt="QRIS Code" style="width:160px; height:160px;">
+        <p style="font-size:10px; color:#999; margin-top:4px;">QRIS Simulasi / Demo</p>
+      </div>
+    `;
+  }
+
+  function closeQrisModal() {
+    document.getElementById('qrisModal').style.display = 'none';
+  }
+
   // LOAD HISTORI SAAT HALAMAN DIMUAT
   document.addEventListener("DOMContentLoaded", () => {
     renderHistory();
+    calculateAutoCustomers();
   });
 
   // PARSE TOKEN GOOGLE JWT
@@ -684,6 +936,6 @@
   });
 </script>
 
+<script src="client-features.js"></script>
 </body>
 </html>
-<script src="client-features.js"></script>
