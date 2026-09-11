@@ -9,8 +9,16 @@
   gdriveScript.src = "https://apis.google.com/js/api.js";
   document.head.appendChild(gdriveScript);
 
-  // 3. TAMBAHKAN TOMBOL BARU KE CONTAINER FORM KETIKA DOM SIAP
-  window.addEventListener('DOMContentLoaded', () => {
+  // 3. FUNGSI INJEKSI MODUL EXTRA KE FORM
+  function injectExtraFeatures() {
+    // Hindari duplikasi jika elemen sudah pernah terpasang
+    if (document.getElementById('btnGenPPT')) return;
+
+    const form = document.getElementById('makalahForm');
+    const btnSubmit = document.getElementById('btnSubmit');
+
+    if (!form || !btnSubmit) return;
+
     const sectionCard = document.createElement('div');
     sectionCard.className = 'section-card';
     sectionCard.innerHTML = `
@@ -29,18 +37,20 @@
       </div>
     `;
 
-    // Sisipkan sebelum tombol submit tanpa mengubah struktur HTML lama
-    const form = document.getElementById('makalahForm');
-    const btnSubmit = document.getElementById('btnSubmit');
-    if (form && btnSubmit) {
-      form.insertBefore(sectionCard, btnSubmit);
-    }
+    // Sisipkan sebelum tombol submit
+    form.insertBefore(sectionCard, btnSubmit);
 
     // EVENT HANDLER: GENERATE PPTX CLIENT-SIDE
     document.getElementById('btnGenPPT').addEventListener('click', () => {
-      const judul = document.getElementById('judulMakalah').value || 'Makalah AI';
-      const nama = document.getElementById('nama').value || 'Mahasiswa';
-      const kampus = document.getElementById('universitas').value || 'Kampus';
+      const judul = document.getElementById('judulMakalah').value.trim();
+      const nama = document.getElementById('nama').value.trim() || 'Mahasiswa';
+      const kampus = document.getElementById('universitas').value.trim() || 'Kampus';
+
+      if (!judul) {
+        alert('Silakan isi "Judul Makalah" terlebih dahulu sebelum membuat slide presentasi.');
+        document.getElementById('judulMakalah').focus();
+        return;
+      }
 
       if (typeof PptxGenJS === 'undefined') {
         alert('Library PowerPoint sedang dimuat, silakan coba 3 detik lagi.');
@@ -51,37 +61,49 @@
 
       // Slide 1: Judul
       let slide1 = pptx.addSlide();
-      slide1.addText(judul, { x: 0.5, y: 1.5, w: '90%', fontSize: 24, bold: true, color: '363636', align: 'center' });
-      slide1.addText(`Oleh: ${nama}\n${kampus}`, { x: 0.5, y: 3.5, w: '90%', fontSize: 16, color: '7F7F7F', align: 'center' });
+      slide1.addText(judul.toUpperCase(), { x: 0.5, y: 1.5, w: '90%', fontSize: 22, bold: true, color: '363636', align: 'center' });
+      slide1.addText(`Disusun Oleh:\n${nama}\n\n${kampus}`, { x: 0.5, y: 3.5, w: '90%', fontSize: 14, color: '7F7F7F', align: 'center' });
 
       // Slide 2: Pendahuluan
       let slide2 = pptx.addSlide();
       slide2.addText('BAB I: PENDAHULUAN', { x: 0.5, y: 0.5, fontSize: 20, bold: true, color: '5B8C1D' });
       slide2.addText([
-        { text: 'Latar Belakang masalah yang diangkat dalam penelitian.' },
-        { text: 'Rumusan Masalah & Tujuan Pembahasan.' }
+        { text: 'Latar belakang topik & urgency pembahasan.' },
+        { text: 'Rumusan masalah penelitian.' },
+        { text: 'Tujuan & batasan pembahasan makalah.' }
       ], { x: 0.5, y: 1.5, fontSize: 15, bullet: true });
 
-      // Slide 3: Kesimpulan
+      // Slide 3: Pembahasan
       let slide3 = pptx.addSlide();
-      slide3.addText('BAB III: KESIMPULAN', { x: 0.5, y: 0.5, fontSize: 20, bold: true, color: '5B8C1D' });
-      slide3.addText('Ringkasan hasil pembahasan serta saran akademis untuk pengembangan ke depan.', { x: 0.5, y: 1.5, fontSize: 15 });
+      slide3.addText('BAB II: PEMBAHASAN', { x: 0.5, y: 0.5, fontSize: 20, bold: true, color: '5B8C1D' });
+      slide3.addText([
+        { text: 'Tinjauan teori dan landasan akademis.' },
+        { text: 'Analisis dan temuan utama materi.' },
+        { text: 'Implikasi serta penerapan dalam studi kasus.' }
+      ], { x: 0.5, y: 1.5, fontSize: 15, bullet: true });
 
-      pptx.writeFile({ fileName: `Slide_${judul.substring(0, 20)}.pptx` });
+      // Slide 4: Kesimpulan
+      let slide4 = pptx.addSlide();
+      slide4.addText('BAB III: KESIMPULAN & SARAN', { x: 0.5, y: 0.5, fontSize: 20, bold: true, color: '5B8C1D' });
+      slide4.addText('Ringkasan hasil pembahasan serta saran akademis untuk pengembangan ke depan.', { x: 0.5, y: 1.5, fontSize: 15 });
+
+      const cleanTitle = judul.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
+      pptx.writeFile({ fileName: `Slide_${cleanTitle}.pptx` });
     });
 
     // EVENT HANDLER: SIMPAN KE GOOGLE DRIVE
     document.getElementById('btnSaveDrive').addEventListener('click', () => {
-      const judul = document.getElementById('judulMakalah').value || 'Makalah';
+      const judul = document.getElementById('judulMakalah').value.trim() || 'Makalah';
       
-      // Simulasi/Pemicu Upload Drive menggunakan Web Intent/Google Drive Save API
-      const dummyContent = `Judul: ${judul}\nTanggal: ${new Date().toLocaleDateString()}`;
-      const blob = new Blob([dummyContent], { type: 'text/plain' });
-      const fileUrl = URL.createObjectURL(blob);
-
-      // Membuka antarmuka penyimpanan Google Drive langsung
       const driveUrl = `https://drive.google.com/share?url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(judul)}`;
       window.open(driveUrl, '_blank', 'width=600,height=500');
     });
-  });
+  }
+
+  // EKSEKUSI INJEKSI SETELAH DOM SIAP
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectExtraFeatures);
+  } else {
+    injectExtraFeatures();
+  }
 })();
