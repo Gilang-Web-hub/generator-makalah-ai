@@ -108,7 +108,7 @@
   }
 })();
 // Ganti dengan Nomor WhatsApp Admin Anda (Gunakan kode negara 62, contoh: 628123456789)
-const ADMIN_WA_NUMBER = "6281234567890"; 
+const ADMIN_WA_NUMBER = "6282214630200"; 
 
 function setupPaymentModal() {
   const modal = document.getElementById('paymentModal');
