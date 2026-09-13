@@ -469,3 +469,27 @@ app.listen(port, () => {
   console.log(`\n Server Web Makalah Aktif & Siap!`);
   console.log(` Akses di browser: http://localhost:${port}`);
 });
+// Contoh Struktur Data Pengguna di Server/Database
+const userDatabase = {
+  "gilanghadifilah16@gmail.com": {
+    nama: "Gilang Hadifilah",
+    paket: "Paket Mingguan", // 'free', '1_makalah', 'mingguan', 'bulanan'
+    kuotaMakalah: 10,        // Sisa kuota pembutan makalah
+    tanggalKadaluarsa: "2026-09-20T23:59:59.000Z", // Tanggal expired
+    sudahBayar: true
+  }
+};
+
+// Fungsi Helper untuk Menghitung Sisa Hari
+function hitungSisaHari(tanggalExpired) {
+  if (!tanggalExpired) return "Gratis";
+  
+  const sekarang = new Date();
+  const expired = new Date(tanggalExpired);
+  const selisihWaktu = expired - sekarang;
+  
+  if (selisihWaktu <= 0) return "Expired (Kadaluarsa)";
+  
+  const sisaHari = Math.ceil(selisihWaktu / (1000 * 60 * 60 * 24));
+  return `${sisaHari} Hari Lagi`;
+}

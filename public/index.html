@@ -981,5 +981,53 @@
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 </style>
+<!-- KARTU INFORMASI AKUN & KUOTA PENGGUNA -->
+<div id="userStatusCard" class="user-status-card">
+  <div class="user-info">
+    <div class="user-avatar" id="userAvatar">👤</div>
+    <div>
+      <h4 id="userName">Mahasiswa (Pengguna Free)</h4>
+      <span class="badge" id="userPackageBadge">Paket Gratis</span>
+    </div>
+  </div>
+  
+  <div class="status-details">
+    <div class="status-item">
+      <span class="label">📄 Sisa Kuota Makalah</span>
+      <strong class="value" id="quotaRemaining">1 Makalah</strong>
+    </div>
+    <div class="status-item">
+      <span class="label">⏳ Masa Aktif Paket</span>
+      <strong class="value" id="expiryRemaining">Gratis (Tanpa Batas)</strong>
+    </div>
+  </div>
+</div>
+
+<style>
+.user-status-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.user-info { display: flex; align-items: center; gap: 12px; }
+.user-info h4 { margin: 0 0 4px 0; font-size: 16px; color: #333; }
+.badge {
+  background: #e9ecef; color: #495057; font-size: 12px;
+  padding: 3px 10px; border-radius: 20px; font-weight: 600;
+}
+.badge-active { background: #d4edda; color: #155724; }
+.status-details { display: flex; gap: 24px; flex-wrap: wrap; }
+.status-item { display: flex; flex-direction: column; }
+.status-item .label { font-size: 12px; color: #6c757d; margin-bottom: 2px; }
+.status-item .value { font-size: 15px; color: #2b579a; font-weight: bold; }
+</style>
 </body>
 </html>

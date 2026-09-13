@@ -160,3 +160,42 @@ if (document.readyState === 'loading') {
 } else {
   setupPaymentModal();
 }
+// Fungsi Memeriksa Kuota dan Mengunci Form jika Belum Bayar/Habis Kuota
+function checkUserAccess(userData) {
+  const quotaElem = document.getElementById('quotaRemaining');
+  const expiryElem = document.getElementById('expiryRemaining');
+  const badgeElem = document.getElementById('userPackageBadge');
+  const btnSubmit = document.getElementById('btnSubmit');
+
+  // 1. Tampilkan Data di UI
+  quotaElem.innerText = `${userData.kuotaMakalah} Makalah`;
+  expiryElem.innerText = hitungSisaHari(userData.tanggalKadaluarsa);
+  badgeElem.innerText = userData.paket;
+
+  // 2. Cek Apakah Kuota Habis atau Masa Aktif Kadaluarsa
+  const isExpired = userData.tanggalKadaluarsa && new Date(userData.tanggalKadaluarsa) < new Date();
+  const isQuotaEmpty = userData.kuotaMakalah <= 0;
+
+  if (isQuotaEmpty || isExpired || !userData.sudahBayar) {
+    // Kunci tombol submit jika tidak punya akses
+    if (btnSubmit) {
+      btnSubmit.disabled = true;
+      btnSubmit.style.background = '#ccc';
+      btnSubmit.style.cursor = 'not-allowed';
+      btnSubmit.innerText = '🔒 Beli Paket untuk Generate Makalah';
+      
+      // Jika diklik, tampilkan modal QRIS pembayaran
+      btnSubmit.onclick = (e) => {
+        e.preventDefault();
+        alert('Kuota Anda sudah habis atau masa aktif paket telah berakhir. Silakan beli paket terlebih dahulu.');
+        document.getElementById('paymentModal').style.display = 'flex';
+      };
+    }
+  } else {
+    // Izinkan pembuatan makalah
+    if (btnSubmit) {
+      btnSubmit.disabled = false;
+      btnSubmit.innerText = '🚀 Generate Makalah Sekarang';
+    }
+  }
+}
