@@ -107,3 +107,56 @@
     injectExtraFeatures();
   }
 })();
+// Ganti dengan Nomor WhatsApp Admin Anda (Gunakan kode negara 62, contoh: 628123456789)
+const ADMIN_WA_NUMBER = "6281234567890"; 
+
+function setupPaymentModal() {
+  const modal = document.getElementById('paymentModal');
+  const btnClose = document.getElementById('btnCloseModal');
+  const btnCloseX = document.getElementById('btnCloseModalX');
+  const btnConfirm = document.getElementById('btnConfirmPayment');
+
+  if (!modal) return;
+
+  // Pasang listener pada semua tombol Beli / Paket Pembayaran
+  document.querySelectorAll('.btn-buy, .btn-beli').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const card = e.target.closest('.card') || e.target.parentElement;
+      const packageName = card ? (card.querySelector('h3, .package-name')?.innerText || 'Paket AI') : 'Paket AI';
+      const price = e.target.getAttribute('data-price') || card?.querySelector('.price')?.innerText || 'Rp 10.000';
+
+      document.getElementById('paymentPackage').innerText = packageName;
+      document.getElementById('paymentAmount').innerText = price;
+      modal.style.display = 'flex';
+    });
+  });
+
+  // Fungsi Tutup Modal
+  const closeModal = () => { modal.style.display = 'none'; };
+  if (btnClose) btnClose.addEventListener('click', closeModal);
+  if (btnCloseX) btnCloseX.addEventListener('click', closeModal);
+
+  // Kirim Bukti via WhatsApp
+  if (btnConfirm) {
+    btnConfirm.addEventListener('click', () => {
+      const paket = document.getElementById('paymentPackage').innerText;
+      const nominal = document.getElementById('paymentAmount').innerText;
+      
+      const pesan = `Halo Admin, saya ingin konfirmasi pembayaran QRIS:\n\n` +
+                    `📦 *Paket:* ${paket}\n` +
+                    `💰 *Nominal:* ${nominal}\n\n` +
+                    `Berikut saya lampirkan foto/screenshot bukti transfernya. Mohon diproses ya, terima kasih!`;
+
+      const urlWA = `https://wa.me/${ADMIN_WA_NUMBER}?text=${encodeURIComponent(pesan)}`;
+      window.open(urlWA, '_blank');
+      closeModal();
+    });
+  }
+}
+
+// Inisialisasi setelah DOM dimuat
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupPaymentModal);
+} else {
+  setupPaymentModal();
+}
